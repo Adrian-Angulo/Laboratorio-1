@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -19,22 +20,27 @@ import java.util.Iterator;
  * @author ADRIAN CASTILLO
  */
 public class Proyecto {
-    //Declaracion de variable y objectos
-    private static ArrayList<Alumno> misAlumnos; //ArrayList para almacenar alumnos
+    // Declaracion de variable y objectos
+    private static ArrayList<Alumno> misAlumnos; // ArrayList para almacenar alumnos
     private static Scanner lector = new Scanner(System.in); // Objeto para leer entrada del usuario
-    
-    
+
+    /**
+     *
+     * @param args
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        misAlumnos= new ArrayList<Alumno>(); //Inicializa el ArrayList de alumnos
+        misAlumnos = new ArrayList<Alumno>(); // Inicializa el ArrayList de alumnos
         leerReportes();
-    //    misAlumnos.add(new Alumno(1, "Camilo","Castillo" ,3, "adrian@101", "123"));
-    //    misAlumnos.add(new Alumno(2, "Adrian","Angulo" ,1, "adf@101", "43"));
-    //    misAlumnos.add(new Alumno(3, "Daniel","Quiñones" ,1, "adfsa@101", "21"));
-    //    misAlumnos.add(new Alumno(4, "Mari","Landazury" ,3, "fas@101", "60"));
-        
-        boolean activo = true; //Bancera para controlar la ejecucion
-        //Bucle principal del programa
-        do {            
+        // misAlumnos.add(new Alumno(1, "Camilo","Castillo" ,3, "adrian@101", "123"));
+        // misAlumnos.add(new Alumno(2, "Adrian","Angulo" ,1, "adf@101", "43"));
+        // misAlumnos.add(new Alumno(3, "Daniel","Quiñones" ,1, "adfsa@101", "21"));
+        // misAlumnos.add(new Alumno(4, "Mari","Landazury" ,3, "fas@101", "60"));
+
+        boolean activo = true; // Bancera para controlar la ejecucion
+        // Bucle principal del programa
+        do {
             // Mostrar menu de opciones al usuario
             System.out.println("--------------------------");
             System.out.println("1.- Insertar alumno");
@@ -54,13 +60,12 @@ public class Proyecto {
                     try {
                         System.out.print("Cedula: ");
                         int cedula = lector.nextInt();
-                        
 
                         System.out.print("Nombre: ");
-                        String nombre=lector.next();
+                        String nombre = lector.next();
 
                         System.out.print("Apellido: ");
-                        String apellido= lector.next();
+                        String apellido = lector.next();
 
                         System.out.print("Semestre: ");
                         int semestre = lector.nextInt();
@@ -73,23 +78,22 @@ public class Proyecto {
 
                         // Intenta crear un objecto Alumno con los datos ingresados
                         Alumno nuevoAlumno = new Alumno(cedula, nombre, apellido, semestre, correo, celular);
-                        
+
                         // LLama al metodo agregarAlumno y pasa el objeto Alumno como parametro
                         agregarAlumno(nuevoAlumno);
-                        System.out.println("Estudiante añadido correctamente.");
-                        
+
                     } catch (java.util.InputMismatchException e) {
-                        //Excepcion en caso de entrada incorrecta
+                        // Excepcion en caso de entrada incorrecta
                         System.out.println("Error, Ingresar datos validos por favor");
                         lector.nextLine();// Limpia el bufer del scanner para evitar problemas
                         break;
-                    } catch (Exception e){
-                        System.out.println("Error"+ e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("Error" + e.getMessage());
                     }
-                    
+
                 }
                 case 2 -> {
-                    //Eliminar alumno
+                    // Eliminar alumno
                     System.out.println("-----------Eliminar Alumno------------");
                     System.out.println("Digite la cedula de alumno a eliminar: ");
                     int cedula = lector.nextInt();
@@ -97,34 +101,33 @@ public class Proyecto {
 
                 }
                 case 3 -> {
-                    //Modificar alumno
+                    // Modificar alumno
                     System.out.println("-----------Modificar Alumno------------");
                     System.out.print("Digite la cedula del estudiante: ");
                     int cedula = lector.nextInt();
                     modificarAlumno(cedula);
-                   
+
                 }
                 case 4 -> {
                     // consular alumno
-                    //leerReportes();
+                    // leerReportes();
                     consultarAlumnos();
                 }
-                case 5-> {
+                case 5 -> {
                     try {
                         System.out.print("Digite el semestre: ");
-                        int semestre= lector.nextInt();
+                        int semestre = lector.nextInt();
                         obtenerReportes(semestre);
-                        
-                        
+
                     } catch (Exception e) {
-                        
+
                     }
                 }
-                
+
                 case 6 -> {
                     // Terminar el programa
                     System.out.println("Gracias por utilizar el programa");
-                    activo=false; // Se cambia la vandera para salir del bucle
+                    activo = false; // Se cambia la vandera para salir del bucle
                 }
                 default -> {
                     // en caso de que la opcion no se encuentre
@@ -133,55 +136,81 @@ public class Proyecto {
             }
 
         } while (activo); // el programa se repite mientras que la bandera sea verdaera
-            
-    }
-        
 
-    //metodo para agregar un alumno al ArrayList
+    }
+
+    
+    /**
+     * metodo para agregar un alumno al ArrayList
+     * @param alumno
+     */
     public static void agregarAlumno(Alumno alumno) {
         misAlumnos.add(alumno); // Agregar alumno al ArrayList
-        System.out.println("el estudiante a sido añadido");
+        try (PrintWriter pluma = new PrintWriter(new FileWriter("./data/Reporte2.txt", true))) {
+            pluma.println(
+                alumno.getCedula() + "," 
+                + alumno.getNombre() + "," 
+                + alumno.getApellido() + "," 
+                + alumno.getSemestre() + "," 
+                + alumno.getCorreo() + ","
+                + alumno.getCelular());
+            pluma.close();
+            System.out.println("el estudiante a sido añadido");
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
     }
 
-    // Metodo que encarga buscar el alumno por medio de la cedula para eliminarlo
+    
+
+    /**
+     * Metodo que encarga buscar el alumno por medio de la cedula para eliminarlo
+     * @param cedula
+     */
     public static void eliminarAlumno(int cedula) {
-        boolean alumnoEliminado=false;
-//        for (int i = 0; i < misAlumnos.size(); i++) {
-//            if(misAlumnos.get(i).getCedula()==cedula){
-//                misAlumnos.remove(i); // elimina el alumno del Arraylist
-//                System.out.println("El alumno a sido eliminado");
-//                break;
-//            }else{
-//                System.out.println("El alumno no fue encontrado");
-//                break;
-//            }
-//        }
-//      creando iterador para recorrer elementos de la lista
+        boolean alumnoEliminado = false;
+        // for (int i = 0; i < misAlumnos.size(); i++) {
+        // if(misAlumnos.get(i).getCedula()==cedula){
+        // misAlumnos.remove(i); // elimina el alumno del Arraylist
+        // System.out.println("El alumno a sido eliminado");
+        // break;
+        // }else{
+        // System.out.println("El alumno no fue encontrado");
+        // break;
+        // }
+        // }
+        // creando iterador para recorrer elementos de la lista
         Iterator<Alumno> it = misAlumnos.iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             Alumno a = (Alumno) it.next();
-            if(a.getCedula()==cedula){
+            if (a.getCedula() == cedula) {
                 it.remove();
-                alumnoEliminado=true;
+                alumnoEliminado = true;
                 break;
             }
         }
-        if(alumnoEliminado){
+        if (alumnoEliminado) {
             System.out.println("El alumno ha sido eliminado");
-            
-        }else{
+
+        } else {
             System.out.println("No se encontro el alumno a eliminar");
-            
+
         }
-            
+
     }
 
-    // Metodo para modificar los datos del alumno
+     
+
+    /**
+     * Metodo para modificar los datos del alumno
+     * @param cedula
+     */
     public static void modificarAlumno(int cedula) {
-       
+
         for (Alumno alumno : misAlumnos) {
             // Condicion prar verificar si existe el alumno
-            if(alumno.getCedula()==cedula){
+            if (alumno.getCedula() == cedula) {
                 // Mostrar opciones de modificacion
                 System.out.print("""
                         ----Que dato desea modificar---
@@ -191,7 +220,7 @@ public class Proyecto {
                         4. Semestre
                         5. Correo
                         6. Celular
-                        Digite una opcion: 
+                        Digite una opcion:
                         """);
                 int dato = lector.nextInt();
                 switch (dato) {
@@ -242,107 +271,121 @@ public class Proyecto {
                         String celular = lector.next();
                         alumno.setCelular(celular);
                     }
-                
+
                     default -> {
-                        //en caso de que no digite una opcion correcta
+                        // en caso de que no digite una opcion correcta
                         System.out.println("---------------------------------");
                         System.out.println(" la opcion es incorrecta");
                         lector.next(); // limpiar buffer
                     }
                 }
                 break; // salir del bucle despues de haber modificado el alumno
-                
-            }else{
+
+            } else {
                 System.out.println("El alumno no existe");
                 break;
             }
-            
+
         }
         System.out.println("Modificacion exitosa");
     }
 
-    // Metodo para consultar y mostrar los datos de los alumnos
+    /**
+     * Metodo para consultar y mostrar los datos de los alumnos
+     */
     public static void consultarAlumnos() {
-        if(misAlumnos.isEmpty()){
+        if (misAlumnos.isEmpty()) {
             System.out.println("No se encontraron datos");
-        }else{
+        } else {
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.printf("| %-10s | %-15s | %-15s | %-8s | %-25s | %-12s |\n", 
+                          "CEDULA", "NOMBRE", "APELLIDO", "SEMESTRE", "CORREO", "CELULAR");
+            System.out.println("--------------------------------------------------------------------------------------------------------");
+        
             for (Alumno alumno : misAlumnos) {
-                System.out.println("------------------------------------");
-                System.out.println("Cedula: "+alumno.getCedula());
-                System.out.println("Nombre: "+alumno.getNombre());
-                System.out.println("Apellido: "+alumno.getApellido());
-                System.out.println("Semestre: "+alumno.getSemestre());
-                System.out.println("Correo: "+ alumno.getCorreo());
-                System.out.println("Celular: "+ alumno.getCelular());
-            }
-        }
-    }
-    
-    public static void obtenerReportes(int semestre) throws Exception{
-        PrintWriter pluma = null;
-        boolean existeAlumno=false;
-        try {
-            //crear el archivo para escribir el archivo
-            File archivo = new File("./data/Reporte.txt");
-            //crear pluma para escribir el archivo
-            pluma = new PrintWriter(archivo);
-           
-             //recorrido sobre los disco
-            for (Alumno alumno : misAlumnos) {
-                if(alumno.getSemestre()==semestre){
-                    //escribir con la pluma la informacion requerida
-                    
-                    pluma.println(
-                                    alumno.getCedula()+
-                                    ","+ alumno.getNombre()+
-                                    ","+ alumno.getApellido()+
-                                    ","+ alumno.getSemestre()+
-                                    ","+ alumno.getCorreo()+
-                                    ","+ alumno.getCelular()
-                    );
-                    existeAlumno = true; 
-                    
-                }
-            }
-            if(!existeAlumno){
-                System.out.println("Error, no existen estudiantes registrados en el semestre "+ semestre);
-                throw new FileNotFoundException("No hay estudiantes en el semestre especificado");
-            }else{
-                System.out.println("Reporte creado con exito");
-            }
-            
-        } catch (FileNotFoundException ex) {
-            System.out.println(ex);
-        } finally{
-            if(pluma !=null){
-                pluma.close();
+                System.out.printf("| %-10s | %-15s | %-15s | %-8s | %-25s | %-12s |\n",
+                alumno.getCedula(), alumno.getNombre(), alumno.getApellido(),
+                alumno.getSemestre(), alumno.getCorreo(), alumno.getCelular());
+                System.out.println("--------------------------------------------------------------------------------------------------------");
             }
         }
     }
 
     /**
-     * @return misAlumnos
-     * @throws IOException
+     * Metodo que permite obtener reportes de los estudiantes de un semestre dado
+     * @param semestre parametro que indica el semestre
+     * @throws Exception excepcion en caso que ocurra algun error
      */
-    public static ArrayList<Alumno> leerReportes() throws IOException{
+    public static void obtenerReportes(int semestre) throws Exception {
+        // Variable para rastrear si se encuentra alumnos en el semestre dado
+        boolean existeAlumno = false;
+
+        // crear el archivo para escribir el reporte
+        // crear pluma para escribir el archivo
+        try (PrintWriter pluma = new PrintWriter( new File("./data/Reporte.txt"))){
+            
+            // recorrido sobre los disco
+            for (Alumno alumno : misAlumnos) {
+                if (alumno.getSemestre() == semestre) {
+                    // escribir con la pluma la informacion del alumno en el archivo
+
+                    pluma.println(
+                            alumno.getCedula() +
+                                    "," + alumno.getNombre() +
+                                    "," + alumno.getApellido() +
+                                    "," + alumno.getSemestre() +
+                                    "," + alumno.getCorreo() +
+                                    "," + alumno.getCelular());
+                    existeAlumno = true; // Marcar que se encontró al menos un alumno.
+
+                }
+            }
+            if (!existeAlumno) {
+                System.out.println("Error, no existen estudiantes registrados en el semestre " + semestre);
+                throw new FileNotFoundException("No hay estudiantes en el semestre especificado");
+            } else {
+                System.out.println("Reporte creado con exito");
+            }
+
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex);
+        } 
+    }
+
+    /** 
+     *  metodo que se encarga de leer el contenido del archivo de texto
+     * @return misAlumnos
+     * @throws IOException 
+     */
+    public static ArrayList<Alumno> leerReportes() throws IOException {
+        //Declaracion de objectos
         FileReader archivo;
         BufferedReader lector;
-
+        
         try {
-            archivo = new FileReader("./data/Reporte.txt");
-            lector = new BufferedReader(archivo);
-            String cadena;
-            while ((cadena = lector.readLine())!=null) {
-                String[] campos = cadena.split(",");
-                Alumno alumno = new Alumno(Integer.parseInt(campos[0]), campos[1], campos[2], Integer.parseInt(campos[3]), campos[4], campos[5]);
-                misAlumnos.add(alumno);
+            archivo = new FileReader("./data/Reporte2.txt"); // Abre el archivo para lectura
+            lector = new BufferedReader(archivo); // leer archivo de manera mas eficiente
+            String cadena; //variable para almacenar cada linea leida desde el archivo
+
+            // Lee líneas del archivo hasta que se alcance el final (se devuelve null).
+            while ((cadena = lector.readLine()) != null) {
+                String[] campos = cadena.split(","); // Divide la línea actual en campos utilizando la coma como delimitador.
+                //registrando los campos en contrado en un clase alumno
+                Alumno alumno = new Alumno( 
+                    Integer.parseInt(campos[0]),
+                    campos[1],
+                    campos[2],
+                    Integer.parseInt(campos[3]),
+                    campos[4],
+                    campos[5]);
+                misAlumnos.add(alumno); // agrega el objecto a la lista 
 
             }
         } catch (Exception e) {
-            System.out.println("error "+ e.getMessage());
-        } 
-        
-        return misAlumnos;
+            System.out.println("error " + e.getMessage()); // Imprime un mensaje de error si ocurre una excepción durante la lectura del archivo.
+        }
+
+        return misAlumnos; // Devuelve la lista de objetos de estudiantes (misAlumnos).
     }
 
 }
