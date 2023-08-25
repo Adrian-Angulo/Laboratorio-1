@@ -110,7 +110,7 @@ public class Proyecto {
      * @param cedula
      */
     public static void modificarAlumno(int cedula,ArrayList<Alumno> misAlumnos, Scanner lector) {
-
+        boolean alumnoM=false; 
         for (Alumno alumno : misAlumnos) {
             // Condicion prar verificar si existe el alumno
             if (alumno.getCedula() == cedula) {
@@ -182,15 +182,30 @@ public class Proyecto {
                         lector.next(); // limpiar buffer
                     }
                 }
+                alumnoM = true;
                 break; // salir del bucle despues de haber modificado el alumno
 
-            } else {
-                System.out.println("El alumno no existe");
-                break;
-            }
+            } 
 
+        }if(alumnoM){
+            System.out.println("Modificacion exitosa");
+            try (PrintWriter pluma = new PrintWriter(new File("./data/Reporte2.txt"))){
+                //Recorrdo sobre los alumnos para escribir en el archivo
+                for (Alumno alumno : misAlumnos) {
+                    pluma.println(
+                        alumno.getCedula() +
+                        "," + alumno.getNombre() +
+                        "," + alumno.getApellido() +
+                        "," + alumno.getSemestre() +
+                        "," + alumno.getCorreo() +
+                        "," + alumno.getCelular());                   
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("No se pudo crear el archivo "+e);
+            }
+        } else{
+            System.out.println("El alumno no existe"); // Mostrar mensaje si no se encuentra el alumno
         }
-        System.out.println("Modificacion exitosa");
     }
 
     /**
@@ -303,7 +318,7 @@ public class Proyecto {
             System.out.println("3.- Modificar alumuno");
             System.out.println("4.- Consultar alumno");
             System.out.println("5.- Obtener reporte del semestre");
-            System.out.println("6.- leer reportes");
+            System.out.println("6.- Terminar programa");
             System.out.print("Digite la opcion que desea realizar: ");
             int opc = lector.nextInt(); // Lee la opcion elegida por el usuario
 
