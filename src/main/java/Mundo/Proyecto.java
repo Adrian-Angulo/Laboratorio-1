@@ -13,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -33,13 +35,11 @@ public class Proyecto {
      */
 
     public static void main(String[] args) throws IOException {
+        // Inicializa el ArrayList de alumnos
         misAlumnos = new ArrayList<Alumno>();
-        //misAlumnos = new ArrayList<Alumno>(); // Inicializa el ArrayList de alumnos
+        //lee los datos guardados en el archivo al ejecutar el programa
         leerReportes(misAlumnos);
         menu(lector, misAlumnos);
-
-
-
     }
 
     
@@ -49,7 +49,8 @@ public class Proyecto {
      */
     public static void agregarAlumno(Alumno alumno, ArrayList<Alumno> misAlumnos) {
         misAlumnos.add(alumno); // Agregar alumno al ArrayList
-        try (PrintWriter pluma = new PrintWriter(new FileWriter("./data/Reporte2.txt", true))) {
+        //Agrega el nuevo alumno sin necesidad de sobre escribir el archivo, utlizando FileWriter
+        try (PrintWriter pluma = new PrintWriter(new FileWriter("./data/datos.txt", true))) { 
             pluma.println(
                 alumno.getCedula() + "," 
                 + alumno.getNombre() + "," 
@@ -58,10 +59,10 @@ public class Proyecto {
                 + alumno.getCorreo() + ","
                 + alumno.getCelular());
             pluma.close();
-            System.out.println("el estudiante a sido añadido");
+            System.out.println("\n" + //
+                    "el estudiante a sido añadido");
         } catch (IOException e) {
-
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 
@@ -84,8 +85,9 @@ public class Proyecto {
             }
         }
         if (alumnoEliminado) {
-            System.out.println("El alumno ha sido eliminado");
-            try (PrintWriter pluma = new PrintWriter( new File("./data/Reporte2.txt"))){
+            System.out.println("\n" + //
+                    "El alumno ha sido eliminado");
+            try (PrintWriter pluma = new PrintWriter( new File("./data/datos.txt"))){
                 // recorrido sobre los disco
                 for (Alumno alumno : misAlumnos) {
                     pluma.println(
@@ -95,11 +97,13 @@ public class Proyecto {
                                     "," + alumno.getSemestre() +
                                     "," + alumno.getCorreo() +
                                     "," + alumno.getCelular());
-
                 }
             }catch (FileNotFoundException ex) {
             System.out.println(ex);
             } 
+        }else{
+            System.out.println("\n" + //
+                    "El alumno no se encuentra en la lista" );
         }
     }
 
@@ -133,9 +137,9 @@ public class Proyecto {
                         try {
                             System.out.print("Cedula nueva: ");
                             cedula = lector.nextInt();
-                            alumno.setCedula(cedula);
+                            alumno.setCedula(cedula); // almacena el nuevo valor en alumno requerido
                         } catch (Exception e) {
-                            System.out.println("Error, Ingresar datos validos por favor");
+                            System.out.println("\nError, Ingresar datos validos por favor");
                             lector.nextLine();// Limpia el bufer del scanner para evitar problemas
                         }
                     }
@@ -172,13 +176,13 @@ public class Proyecto {
                         System.out.println("---------------------------------");
                         System.out.println("Celular nuevo: ");
                         String celular = lector.next();
-                        alumno.setCelular(celular);
+                        alumno.setCelular(celular); 
                     }
 
                     default -> {
                         // en caso de que no digite una opcion correcta
                         System.out.println("---------------------------------");
-                        System.out.println(" la opcion es incorrecta");
+                        System.out.println("\nla opcion es incorrecta");
                         lector.next(); // limpiar buffer
                     }
                 }
@@ -189,7 +193,7 @@ public class Proyecto {
 
         }if(alumnoM){
             System.out.println("Modificacion exitosa");
-            try (PrintWriter pluma = new PrintWriter(new File("./data/Reporte2.txt"))){
+            try (PrintWriter pluma = new PrintWriter(new File("./data/datos.txt"))){
                 //Recorrdo sobre los alumnos para escribir en el archivo
                 for (Alumno alumno : misAlumnos) {
                     pluma.println(
@@ -201,10 +205,10 @@ public class Proyecto {
                         "," + alumno.getCelular());                   
                 }
             } catch (FileNotFoundException e) {
-                System.out.println("No se pudo crear el archivo "+e);
+                System.out.println("\nNo se pudo crear el archivo "+e);
             }
         } else{
-            System.out.println("El alumno no existe"); // Mostrar mensaje si no se encuentra el alumno
+            System.out.println("\nEl alumno no existe"); // Mostrar mensaje si no se encuentra el alumno
         }
     }
 
@@ -212,13 +216,25 @@ public class Proyecto {
      * Metodo para consultar y mostrar los datos de los alumnos
      */
     public static void consultarAlumnos(ArrayList<Alumno> misAlumnos) {
+
+    // Ordenar la lista de alumnos por cédula (de menor a mayor)
+        Collections.sort(misAlumnos, new Comparator<Alumno>() {
+            public int compare(Alumno alumno1, Alumno alumno2) {
+                return Integer.compare(alumno1.getCedula(), alumno2.getCedula());
+            }
+        }); 
+        // condicion que comprueba si la lista esta vacia    
         if (misAlumnos.isEmpty()) {
-            System.out.println("No se encontraron datos");
+            System.out.println("\nNo se encontraron datos");
+        // En caso de que la lista no este vacia imprime todos los datos de la lista    
         } else {
-            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.println("\n" + //
+                    "--------------------------------------------------------------------------------------------------------");
+            //estructura que permite guardar espacios, en este caso se usa para darle forma a la lista
             System.out.printf("| %-10s | %-15s | %-15s | %-8s | %-25s | %-12s |\n", 
                           "CEDULA", "NOMBRE", "APELLIDO", "SEMESTRE", "CORREO", "CELULAR");
-            System.out.println("--------------------------------------------------------------------------------------------------------");
+            System.out.println("--------------------------------------------------------------------------------------------------------" + //
+                    "");
         
             for (Alumno alumno : misAlumnos) {
                 System.out.printf("| %-10s | %-15s | %-15s | %-8s | %-25s | %-12s |\n",
@@ -259,10 +275,10 @@ public class Proyecto {
                 }
             }
             if (!existeAlumno) {
-                System.out.println("Error, no existen estudiantes registrados en el semestre " + semestre);
-                throw new FileNotFoundException("No hay estudiantes en el semestre especificado");
+                //System.out.println("\nrror, no existen estudiantes registrados en el semestre " + semestre);
+                throw new FileNotFoundException("\nNo hay estudiantes en el semestre especificado");
             } else {
-                System.out.println("Reporte creado con exito");
+                System.out.println("\nReporte creado con exito");
             }
 
         } catch (FileNotFoundException ex) {
@@ -281,7 +297,7 @@ public class Proyecto {
         BufferedReader lector;
         
         try {
-            archivo = new FileReader("./data/Reporte2.txt"); // Abre el archivo para lectura
+            archivo = new FileReader("./data/datos.txt"); // Abre el archivo para lectura
             lector = new BufferedReader(archivo); // leer archivo de manera mas eficiente
             String cadena; //variable para almacenar cada linea leida desde el archivo
 
@@ -300,7 +316,7 @@ public class Proyecto {
 
             }
         } catch (Exception e) {
-            System.out.println("error " + e.getMessage()); // Imprime un mensaje de error si ocurre una excepción durante la lectura del archivo.
+            System.out.println("\nerror " + e.getMessage()); // Imprime un mensaje de error si ocurre una excepción durante la lectura del archivo.
         }
 
         return misAlumnos; // Devuelve la lista de objetos de estudiantes (misAlumnos).
@@ -312,7 +328,7 @@ public class Proyecto {
         boolean activo = true; // Bancera para controlar la ejecucion
         do {
              // Mostrar menu de opciones al usuario
-            System.out.println("--------------------------");
+            System.out.println();
             System.out.println("1.- Insertar alumno");
             System.out.println("2.- Eliminar alumno");
             System.out.println("3.- Modificar alumuno");
@@ -325,7 +341,7 @@ public class Proyecto {
             switch (opc) {
                 case 1->{
                     // Insertar alumno
-                    System.out.println("--------------Digite los datos del estudiante----------------- ");
+                    System.out.println("\n--------------Digite los datos del estudiante----------------- ");
                     try {
                         System.out.print("Cedula: ");
                         int cedula = lector.nextInt();
@@ -333,7 +349,8 @@ public class Proyecto {
                         boolean alumnoExiste=false;
                         for (Alumno alumno : misAlumnos) {
                             if(alumno.getCedula()==cedula){
-                                System.out.println("El alumno ya se encuentra registrado");
+                                System.out.println("\n" + //
+                                        "El alumno ya se encuentra registrado");
                                 alumnoExiste=true;
                                 break; // salir del bucle
                             }
@@ -364,16 +381,20 @@ public class Proyecto {
 
                     } catch (java.util.InputMismatchException e) {
                         // Excepcion en caso de entrada incorrecta
-                        System.out.println("Error, Ingresar datos validos por favor");
+                        System.out.println("\n" + //
+                                "Error, Ingresar datos validos por favor" + //
+                                        "");
                         lector.nextLine();// Limpia el bufer del scanner para evitar problemas
                         
                     } catch (Exception e) {
-                        System.out.println("Error" + e.getMessage());
+                        System.out.println("\n" + //
+                                "Error" + e.getMessage());
                     }
                 }
                 case 2 ->{
                     // Eliminar alumno
-                    System.out.println("-----------Eliminar Alumno------------");
+                    System.out.println("\n" + //
+                            "-----------Eliminar Alumno------------");
                     System.out.println("Digite la cedula de alumno a eliminar: ");
                     int cedula = lector.nextInt();
                     eliminarAlumno(cedula, misAlumnos);
@@ -381,7 +402,8 @@ public class Proyecto {
                 }
                 case 3 -> {
                     // Modificar alumno
-                    System.out.println("-----------Modificar Alumno------------");
+                    System.out.println("\n" + //
+                            "-----------Modificar Alumno------------");
                     System.out.print("Digite la cedula del estudiante: ");
                     int cedula = lector.nextInt();
                     modificarAlumno(cedula, misAlumnos, lector);
@@ -404,12 +426,16 @@ public class Proyecto {
 
                 case 6 -> {
                     // Terminar el programa
-                    System.out.println("Gracias por utilizar el programa");
+                    System.out.println("\n" + //
+                            "Gracias por utilizar el programa" + //
+                                    "");
                     activo = false; // Se cambia la vandera para salir del bucle
                 }
                 default -> {
                     // en caso de que la opcion no se encuentre
-                    System.out.println("Opcion invalida");
+                    System.out.println("\n" + //
+                            "Opcion invalida" + //
+                                    "");
                 }            
                 
             }
