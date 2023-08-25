@@ -330,32 +330,43 @@ public class Proyecto {
                         System.out.print("Cedula: ");
                         int cedula = lector.nextInt();
 
-                        System.out.print("Nombre: ");
-                        String nombre = lector.next();
+                        boolean alumnoExiste=false;
+                        for (Alumno alumno : misAlumnos) {
+                            if(alumno.getCedula()==cedula){
+                                System.out.println("El alumno ya se encuentra registrado");
+                                alumnoExiste=true;
+                                break; // salir del bucle
+                            }
+                        }
+                        if (!alumnoExiste) {
+                            
+                            System.out.print("Nombre: ");
+                            String nombre = lector.next();
 
-                        System.out.print("Apellido: ");
-                        String apellido = lector.next();
+                            System.out.print("Apellido: ");
+                            String apellido = lector.next();
 
-                        System.out.print("Semestre: ");
-                        int semestre = lector.nextInt();
+                            System.out.print("Semestre: ");
+                            int semestre = lector.nextInt();
 
-                        System.out.print("Correo: ");
-                        String correo = lector.next();
+                            System.out.print("Correo: ");
+                            String correo = lector.next();
 
-                        System.out.print("Celular: ");
-                        String celular = lector.next();
+                            System.out.print("Celular: ");
+                            String celular = lector.next();
 
-                        // Intenta crear un objecto Alumno con los datos ingresados
-                        Alumno nuevoAlumno = new Alumno(cedula, nombre, apellido, semestre, correo, celular);
+                            // Intenta crear un objecto Alumno con los datos ingresados
+                            Alumno nuevoAlumno = new Alumno(cedula, nombre, apellido, semestre, correo, celular);
 
-                        // LLama al metodo agregarAlumno y pasa el objeto Alumno como parametro
-                        agregarAlumno(nuevoAlumno, misAlumnos);
+                            // LLama al metodo agregarAlumno y pasa el objeto Alumno como parametro
+                            agregarAlumno(nuevoAlumno, misAlumnos);
+                        }
 
                     } catch (java.util.InputMismatchException e) {
                         // Excepcion en caso de entrada incorrecta
                         System.out.println("Error, Ingresar datos validos por favor");
                         lector.nextLine();// Limpia el bufer del scanner para evitar problemas
-                        break;
+                        
                     } catch (Exception e) {
                         System.out.println("Error" + e.getMessage());
                     }
