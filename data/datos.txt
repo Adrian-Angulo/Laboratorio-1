@@ -1,4 +1,4 @@
-1,Camilo,Angulo,3,adrianangulo1080@gmail,3174609128
-2,Maicol,Landazury,3,adsfljlskjd,3214
-4,Carolina,Quinones,4,CaroQui√±ones,3242
+1,Edrien,Angulo,3,adrianangulo1080@gmail,3174609128
+2,Maikol,Qui§ones,3,aasdf,32312
+12,Dayan,Qui§ones,4,adsfads,fsadfdsa
 1080831081,Adrian,Castillo,4,accastillo@umarina,3232386890

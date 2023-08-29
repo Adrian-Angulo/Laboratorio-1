@@ -23,7 +23,7 @@ import java.util.Iterator;
  */
 public class Proyecto {
     // Objeto para leer entrada del usuario
-    private static ArrayList<Alumno> misAlumnos; // ArrayList para almacenar alumnos
+     // ArrayList para almacenar alumnos
     private static Scanner lector = new Scanner(System.in);
 
     /**
@@ -35,7 +35,7 @@ public class Proyecto {
 
     public static void main(String[] args) throws IOException {
         // Inicializa el ArrayList de alumnos
-        misAlumnos = new ArrayList<Alumno>();
+        ArrayList<Alumno> misAlumnos = new ArrayList<Alumno>();
         // lee los datos guardados en el archivo al ejecutar el programa
         leerReportes(misAlumnos);
         menu(lector, misAlumnos);
@@ -194,6 +194,7 @@ public class Proyecto {
         }
         if (alumnoM) {
             System.out.println("Modificacion exitosa");
+            //Crear nuevo archivo
             try (PrintWriter pluma = new PrintWriter(new File("./data/datos.txt"))) {
                 // Recorrdo sobre los alumnos para escribir en el archivo
                 for (Alumno alumno : misAlumnos) {
@@ -268,7 +269,6 @@ public class Proyecto {
             for (Alumno alumno : misAlumnos) {
                 if (alumno.getSemestre() == semestre) {
                     // escribir con la pluma la informacion del alumno en el archivo
-
                     pluma.println(
                             alumno.getCedula() +
                                     "," + alumno.getNombre() +
@@ -277,7 +277,7 @@ public class Proyecto {
                                     "," + alumno.getCorreo() +
                                     "," + alumno.getCelular());
                     existeAlumno = true; // Marcar que se encontró al menos un alumno.
-
+                    
                 }
             }
             if (!existeAlumno) {
